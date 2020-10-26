@@ -1,4 +1,4 @@
-from torch.utils.data import Dataset, IterableDataset
+from torch.utils.data import Dataset, IterableDataset, ChainDataset, ConcatDataset, TensorDataset
 
 
 class ValueDataset(Dataset):
