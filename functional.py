@@ -108,15 +108,18 @@ def daugment(dataset, aug_fn=None):
     return AugmentedDataset(dataset, aug_fn)
 
 
-def dcache(dataset=None, cache=None):
+def dcache(dataset=None, cache=None, enable=True):
     assert cache is not None
 
     if dataset is None:
         from functools import partial
-        return partial(dcache, cache=cache)
+        return partial(dcache, cache=cache, enable=enable)
 
-    from .model import CachedDataset
-    return CachedDataset(dataset, cache)
+    if enable:
+        from .model import CachedDataset
+        return CachedDataset(dataset, cache)
+
+    return dataset
 
 
 #####################################################
@@ -161,7 +164,6 @@ def images(paths, transform=None, img_exts=["jpg", "jpeg", "png"], *, img_loader
                 "Default image loader is imageio and/or pillow (PIL).",
                 "Module 'imageio' or 'PIL' not found!",
                 "Try 'pip install imageio' or 'pip install pillow' or provide custom 'img_loader'")
-            raise e
 
     def img_transform(path):
         img = img_loader(path)
@@ -303,21 +305,21 @@ def cache_json(cache_dir, load_kwds=None, save_kwds=None, make_dir=True):
 # Cache Dataset Macros
 #####################################################
 
-def dcache_file(dataset, cache_dir, load_fn, save_fn, make_dir=True):
+def dcache_file(dataset, cache_dir, load_fn, save_fn, make_dir=True, enable=True):
     cache = cache_file(cache_dir, load_fn, save_fn, make_dir=make_dir)
-    return dcache(dataset, cache)
+    return dcache(dataset, cache, enable)
 
 
-def dcache_tensor(dataset, cache_dir, make_dir=True):
+def dcache_tensor(dataset, cache_dir, make_dir=True, enable=True):
     cache = cache_tensor(cache_dir, make_dir=make_dir)
-    return dcache(dataset, cache)
+    return dcache(dataset, cache, enable)
 
 
-def dcache_text(dataset, cache_dir, array=False, make_dir=True):
+def dcache_text(dataset, cache_dir, array=False, make_dir=True, enable=True):
     cache = cache_text(cache_dir, array=array, make_dir=make_dir)
-    return dcache(dataset, cache)
+    return dcache(dataset, cache, enable)
 
 
-def dcache_json(dataset, cache_dir, load_kwds=None, save_kwds=None, make_dir=True):
+def dcache_json(dataset, cache_dir, load_kwds=None, save_kwds=None, make_dir=True, enable=True):
     cache = cache_json(cache_dir, load_kwds=load_kwds, save_kwds=save_kwds, make_dir=make_dir)
-    return dcache(dataset, cache)
+    return dcache(dataset, cache, enable)
