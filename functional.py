@@ -116,6 +116,15 @@ def dcache(dataset=None, cache=None, enable=True):
         return partial(dcache, cache=cache, enable=enable)
 
     if enable:
+        if callable(cache):
+            not_cache = any([
+                getattr(cache, "__getitem__", None) is None,
+                getattr(cache, "__setitem__", None) is None,
+                getattr(cache, "__contains__", None) is None
+            ])
+            if not_cache:
+                cache = cache()
+
         from .model import CachedDataset
         return CachedDataset(dataset, cache)
 
@@ -175,7 +184,6 @@ def images(paths, transform=None, img_exts=["jpg", "jpeg", "png"], *, img_loader
             img.close()
         return out
 
-    from .utils import glob
     return files(paths, img_transform, use_glob=use_glob, glob_recursive=glob_recursive, sort_key=sort_key, sort_reverse=sort_reverse)
 
 
@@ -210,6 +218,11 @@ def tensors(paths, transform=None, *, tensor_loader=None, use_glob=True, glob_re
 def cache_create(load_fn, save_fn, exist_fn):
     from .cache import LambdaCache
     return LambdaCache(save_fn=save_fn, load_fn=load_fn, exist_fn=exist_fn)
+
+
+def cache_dict(preloaded_data=None):
+    from .cache import DictCache
+    return DictCache(preloaded_data)
 
 
 def cache_file(cache_dir, load_fn, save_fn, make_dir=True):
@@ -305,21 +318,31 @@ def cache_json(cache_dir, load_kwds=None, save_kwds=None, make_dir=True):
 # Cache Dataset Macros
 #####################################################
 
+def dcache_dict(dataset, preloaded_data=None, enable=True):
+    from functools import partial
+    cache_gen = partial(cache_dict(preloaded_data=preloaded_data))
+    return dcache(dataset, cache_gen, enable)
+
+
 def dcache_file(dataset, cache_dir, load_fn, save_fn, make_dir=True, enable=True):
-    cache = cache_file(cache_dir, load_fn, save_fn, make_dir=make_dir)
-    return dcache(dataset, cache, enable)
+    from functools import partial
+    cache_gen = partial(cache_file(cache_dir=cache_dir, load_fn=load_fn, save_fn=save_fn, make_dir=make_dir))
+    return dcache(dataset, cache_gen, enable)
 
 
 def dcache_tensor(dataset, cache_dir, make_dir=True, enable=True):
-    cache = cache_tensor(cache_dir, make_dir=make_dir)
-    return dcache(dataset, cache, enable)
+    from functools import partial
+    cache_gen = partial(cache_tensor(cache_dir=cache_dir, make_dir=make_dir))
+    return dcache(dataset, cache_gen, enable)
 
 
 def dcache_text(dataset, cache_dir, array=False, make_dir=True, enable=True):
-    cache = cache_text(cache_dir, array=array, make_dir=make_dir)
-    return dcache(dataset, cache, enable)
+    from functools import partial
+    cache_gen = partial(cache_text(cache_dir=cache_dir, array=array, make_dir=make_dir))
+    return dcache(dataset, cache_gen, enable)
 
 
 def dcache_json(dataset, cache_dir, load_kwds=None, save_kwds=None, make_dir=True, enable=True):
-    cache = cache_json(cache_dir, load_kwds=load_kwds, save_kwds=save_kwds, make_dir=make_dir)
-    return dcache(dataset, cache, enable)
+    from functools import partial
+    cache_gen = partial(cache_json(cache_dir=cache_dir, load_kwds=load_kwds, save_kwds=save_kwds, make_dir=make_dir))
+    return dcache(dataset, cache_gen, enable)
