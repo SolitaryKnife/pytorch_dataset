@@ -320,29 +320,29 @@ def cache_json(cache_dir, load_kwds=None, save_kwds=None, make_dir=True):
 
 def dcache_dict(dataset, preloaded_data=None, enable=True):
     from functools import partial
-    cache_gen = partial(cache_dict(preloaded_data=preloaded_data))
+    cache_gen = partial(cache_dict, preloaded_data=preloaded_data)
     return dcache(dataset, cache_gen, enable)
 
 
 def dcache_file(dataset, cache_dir, load_fn, save_fn, make_dir=True, enable=True):
     from functools import partial
-    cache_gen = partial(cache_file(cache_dir=cache_dir, load_fn=load_fn, save_fn=save_fn, make_dir=make_dir))
+    cache_gen = partial(cache_file, cache_dir=cache_dir, load_fn=load_fn, save_fn=save_fn, make_dir=make_dir)
     return dcache(dataset, cache_gen, enable)
 
 
 def dcache_tensor(dataset, cache_dir, make_dir=True, enable=True):
     from functools import partial
-    cache_gen = partial(cache_tensor(cache_dir=cache_dir, make_dir=make_dir))
+    cache_gen = partial(cache_tensor, cache_dir=cache_dir, make_dir=make_dir)
     return dcache(dataset, cache_gen, enable)
 
 
 def dcache_text(dataset, cache_dir, array=False, make_dir=True, enable=True):
     from functools import partial
-    cache_gen = partial(cache_text(cache_dir=cache_dir, array=array, make_dir=make_dir))
+    cache_gen = partial(cache_text, cache_dir=cache_dir, array=array, make_dir=make_dir)
     return dcache(dataset, cache_gen, enable)
 
 
 def dcache_json(dataset, cache_dir, load_kwds=None, save_kwds=None, make_dir=True, enable=True):
     from functools import partial
-    cache_gen = partial(cache_json(cache_dir=cache_dir, load_kwds=load_kwds, save_kwds=save_kwds, make_dir=make_dir))
+    cache_gen = partial(cache_json, cache_dir=cache_dir, load_kwds=load_kwds, save_kwds=save_kwds, make_dir=make_dir)
     return dcache(dataset, cache_gen, enable)
