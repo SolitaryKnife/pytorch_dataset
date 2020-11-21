@@ -1,3 +1,4 @@
+
 def eprint(*args, **kwds):
     from sys import stderr
     print(*args, file=stderr, **kwds)
