@@ -37,16 +37,16 @@ def dmap(values=None, transform=None, force_iter=False):
 
     # If force as IterableDataset
     if force_iter:
-        from .model import ValueIterableDataset
+        from .dataset import ValueIterableDataset
         return ValueIterableDataset(values, transform)
 
     # If dataset[idx] and len(dataset) are available, use ValueDataset
     if callable(getattr(values, "__getitem__", None)) and callable(getattr(values, "__len__", None)):
-        from .model import ValueDataset
+        from .dataset import ValueDataset
         return ValueDataset(values, transform)
 
     # Fallback to IterableDataset
-    from .model import ValueIterableDataset
+    from .dataset import ValueIterableDataset
     return ValueIterableDataset(values, transform)
 
 
@@ -64,11 +64,11 @@ def dzip(*datasets, zip_transform=None):
     from torch.utils.data import IterableDataset
     if any([isinstance(ds, IterableDataset) for ds in datasets]):
 
-        from .model import ZipIterableDataset
+        from .dataset import ZipIterableDataset
         return ZipIterableDataset(datasets, zip_transform)
 
     # Otherwise, use ZipDataset
-    from .model import ZipDataset
+    from .dataset import ZipDataset
     return ZipDataset(datasets, zip_transform)
 
 
@@ -86,11 +86,11 @@ def dcombine(*datasets, comb_transform=None):
     from torch.utils.data import IterableDataset
     if any([isinstance(ds, IterableDataset) for ds in datasets]):
 
-        from .model import CombineIterableDataset
+        from .dataset import CombineIterableDataset
         return CombineIterableDataset(datasets, comb_transform)
 
     # Otherwise, use ZipDataset
-    from .model import CombineDataset
+    from .dataset import CombineDataset
     return CombineDataset(datasets, comb_transform)
 
 
@@ -104,7 +104,7 @@ def daugment(dataset, aug_fn=None):
         from torchvision.transforms import Compose
         aug_fn = Compose(aug_fn)
 
-    from .model import AugmentedDataset
+    from .dataset import AugmentedDataset
     return AugmentedDataset(dataset, aug_fn)
 
 
@@ -125,7 +125,7 @@ def dcache(dataset=None, cache=None, enable=True):
             if not_cache:
                 cache = cache()
 
-        from .model import CachedDataset
+        from .dataset import CachedDataset
         return CachedDataset(dataset, cache)
 
     return dataset
