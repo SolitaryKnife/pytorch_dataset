@@ -136,7 +136,7 @@ def dcache(dataset=None, cache=None, enable=True):
 #####################################################
 
 
-def indexfiles(pathquery, transform):
+def indexfiles(pathquery, transform=None):
     from os import walk
     from os.path import dirname
 
