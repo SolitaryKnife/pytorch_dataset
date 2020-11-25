@@ -4,7 +4,7 @@ def eprint(*args, **kwds):
     print(*args, file=stderr, **kwds)
 
 
-def glob(pathname, *, recursive=False, sort=True, unique=True, sort_key=None, sort_reverse=False):
+def glob(pathname, *, recursive=False, unique=True, sort=True, sort_key=None, sort_reverse=False):
     from glob import glob as _glob
 
     # If simple string

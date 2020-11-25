@@ -145,18 +145,18 @@ def indexfiles(pathquery, transform=None):
 
     dirpath = dirname(generate_path(0))
     count = len(next(walk(dirpath))[2])
-    return dmap(range(count), transform=[
+    return dmap(range(count), [
         generate_path,
         transform or identity_transform
     ])
 
 
-def globfiles(paths, transform=None, *, glob_recursive=False, sort_key=None, sort_reverse=False):
+def globfiles(paths, transform=None, recursive=False, unique=True, sort=True, sort_key=None, sort_reverse=False):
     from .utils import glob
-    return dmap(glob(paths, recursive=glob_recursive, key=sort_key, reverse=sort_reverse, unique=True), transform)
+    return dmap(glob(paths, recursive=recursive, unique=unique, sort=sort, sort_key=sort_key, sort_reverse=sort_reverse), transform)
 
 
-def images(paths, transform=None, img_exts=["jpg", "jpeg", "png"], *, img_loader=None, img_autoclose=True, use_glob=True, glob_recursive=False, sort_key=None, sort_reverse=False):
+def images(paths, transform=None, img_exts=["jpg", "jpeg", "png"], *, img_loader=None, img_autoclose=True):
     from .utils import fill
     paths = fill(paths, ext=img_exts)
 
@@ -197,10 +197,20 @@ def images(paths, transform=None, img_exts=["jpg", "jpeg", "png"], *, img_loader
             img.close()
         return out
 
-    return globfiles(paths, img_transform, use_glob=use_glob, glob_recursive=glob_recursive, sort_key=sort_key, sort_reverse=sort_reverse)
+    return dmap(paths, img_transform)
 
 
-def tensors(paths, transform=None, *, tensor_loader=None, use_glob=True, glob_recursive=False, sort_key=None, sort_reverse=False):
+def globimages(paths, transform=None, img_exts=["jpg", "jpeg", "png"], img_loader=None, img_autoclose=True, glob_recursive=False, glob_unique=True, glob_sort=True, sort_key=None, sort_reverse=False):
+    paths = globfiles(paths, recursive=glob_recursive, unique=glob_unique, sort=glob_sort, sort_key=sort_key, sort_reverse=sort_reverse)
+    return images(paths, transform, img_exts=img_exts, img_loader=img_loader, img_autoclose=img_autoclose)
+
+
+def indeximages(pathquery, transform, img_exts=["jpg", "jpeg", "png"], img_loader=None, img_autoclose=True):
+    paths = indexfiles(pathquery)
+    return images(paths, transform, img_exts=img_exts, img_loader=img_loader, img_autoclose=img_autoclose)
+
+
+def tensors(paths, transform=None, tensor_loader=None):
     transform = transform or identity_transform
     if isinstance(transform, (list, tuple)):
         from torchvision.transforms import Compose
@@ -220,8 +230,17 @@ def tensors(paths, transform=None, *, tensor_loader=None, use_glob=True, glob_re
         tensor = torch_loader(path)
         return transform(tensor)
 
-    from .utils import glob
-    return globfiles(paths, tensor_transform, use_glob=use_glob, glob_recursive=glob_recursive, sort_key=sort_key, sort_reverse=sort_reverse)
+    return dmap(paths, transform=tensor_transform)
+
+
+def globtensor(paths, transform=None, tensor_loader=None, glob_recursive=False, glob_unique=True, glob_sort=True, sort_key=None, sort_reverse=False):
+    paths = globfiles(paths, recursive=glob_recursive, unique=glob_unique, sort=glob_sort, sort_key=sort_key, sort_reverse=sort_reverse)
+    return tensors(paths, transform, tensor_loader=tensor_loader)
+
+
+def indextensor(pathquery, transform, tensor_loader=None):
+    paths = indexfiles(pathquery)
+    return tensors(paths, transform, tensor_loader=tensor_loader)
 
 
 #####################################################
