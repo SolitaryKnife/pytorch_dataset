@@ -135,6 +135,22 @@ def dcache(dataset=None, cache=None, enable=True):
 # Dataset Constructors
 #####################################################
 
+
+def indexfiles(pathquery, transform):
+    from os import walk
+    from os.path import dirname
+
+    def generate_path(idx):
+        return pathquery.format(idx, idx=idx, index=idx)
+
+    dirpath = dirname(generate_path(0))
+    count = len(next(walk(dirpath))[2])
+    return dmap(range(count), transform=[
+        generate_path,
+        transform or identity_transform
+    ])
+
+
 def files(paths, transform=None, *, use_glob=True, glob_recursive=False, sort_key=None, sort_reverse=False):
     from .utils import glob
     if use_glob:
