@@ -135,6 +135,10 @@ def dcache(dataset=None, cache=None, enable=True):
 # Dataset Constructors
 #####################################################
 
+def numbers(size, transform=None):
+    return dmap(range(size), transform)
+
+
 def glob_files(paths, transform=None, recursive=False, unique=True, sort=True, sort_key=None, sort_reverse=False):
     from .utils import glob
     return dmap(glob(paths, recursive=recursive, unique=unique, sort=sort, sort_key=sort_key, sort_reverse=sort_reverse), transform)
