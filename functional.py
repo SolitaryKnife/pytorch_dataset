@@ -135,8 +135,12 @@ def dcache(dataset=None, cache=None, enable=True):
 # Dataset Constructors
 #####################################################
 
+def glob_files(paths, transform=None, recursive=False, unique=True, sort=True, sort_key=None, sort_reverse=False):
+    from .utils import glob
+    return dmap(glob(paths, recursive=recursive, unique=unique, sort=sort, sort_key=sort_key, sort_reverse=sort_reverse), transform)
 
-def indexfiles(pathquery, transform=None):
+
+def index_files(pathquery, transform=None):
     from os import walk
     from os.path import dirname
 
@@ -149,11 +153,6 @@ def indexfiles(pathquery, transform=None):
         generate_path,
         transform or identity_transform
     ])
-
-
-def globfiles(paths, transform=None, recursive=False, unique=True, sort=True, sort_key=None, sort_reverse=False):
-    from .utils import glob
-    return dmap(glob(paths, recursive=recursive, unique=unique, sort=sort, sort_key=sort_key, sort_reverse=sort_reverse), transform)
 
 
 def images(paths, transform=None, img_exts=["jpg", "jpeg", "png"], *, img_loader=None, img_autoclose=True):
@@ -200,13 +199,13 @@ def images(paths, transform=None, img_exts=["jpg", "jpeg", "png"], *, img_loader
     return dmap(paths, img_transform)
 
 
-def globimages(paths, transform=None, img_exts=["jpg", "jpeg", "png"], img_loader=None, img_autoclose=True, glob_recursive=False, glob_unique=True, glob_sort=True, sort_key=None, sort_reverse=False):
-    paths = globfiles(paths, recursive=glob_recursive, unique=glob_unique, sort=glob_sort, sort_key=sort_key, sort_reverse=sort_reverse)
+def glob_images(paths, transform=None, img_exts=["jpg", "jpeg", "png"], img_loader=None, img_autoclose=True, glob_recursive=False, glob_unique=True, glob_sort=True, sort_key=None, sort_reverse=False):
+    paths = glob_files(paths, recursive=glob_recursive, unique=glob_unique, sort=glob_sort, sort_key=sort_key, sort_reverse=sort_reverse)
     return images(paths, transform, img_exts=img_exts, img_loader=img_loader, img_autoclose=img_autoclose)
 
 
-def indeximages(pathquery, transform, img_exts=["jpg", "jpeg", "png"], img_loader=None, img_autoclose=True):
-    paths = indexfiles(pathquery)
+def index_images(pathquery, transform, img_exts=["jpg", "jpeg", "png"], img_loader=None, img_autoclose=True):
+    paths = index_files(pathquery)
     return images(paths, transform, img_exts=img_exts, img_loader=img_loader, img_autoclose=img_autoclose)
 
 
@@ -233,13 +232,13 @@ def tensors(paths, transform=None, tensor_loader=None):
     return dmap(paths, transform=tensor_transform)
 
 
-def globtensor(paths, transform=None, tensor_loader=None, glob_recursive=False, glob_unique=True, glob_sort=True, sort_key=None, sort_reverse=False):
-    paths = globfiles(paths, recursive=glob_recursive, unique=glob_unique, sort=glob_sort, sort_key=sort_key, sort_reverse=sort_reverse)
+def glob_tensor(paths, transform=None, tensor_loader=None, glob_recursive=False, glob_unique=True, glob_sort=True, sort_key=None, sort_reverse=False):
+    paths = glob_files(paths, recursive=glob_recursive, unique=glob_unique, sort=glob_sort, sort_key=sort_key, sort_reverse=sort_reverse)
     return tensors(paths, transform, tensor_loader=tensor_loader)
 
 
-def indextensor(pathquery, transform, tensor_loader=None):
-    paths = indexfiles(pathquery)
+def index_tensor(pathquery, transform, tensor_loader=None):
+    paths = index_files(pathquery)
     return tensors(paths, transform, tensor_loader=tensor_loader)
 
 
