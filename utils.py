@@ -4,12 +4,12 @@ def eprint(*args, **kwds):
     print(*args, file=stderr, **kwds)
 
 
-def glob(pathname, *, recursive=False, key=None, reverse=False, unique=True):
+def glob(pathname, *, recursive=False, sort=True, unique=True, sort_key=None, sort_reverse=False):
     from glob import glob as _glob
 
     # If simple string
     if isinstance(pathname, str):
-        return sorted(_glob(pathname, recursive=recursive), key=key, reverse=reverse)
+        return sorted(_glob(pathname, recursive=recursive), key=sort_key, reverse=sort_reverse)
 
     # Assume pathname is iterable
     assert all([isinstance(p, str) for p in pathname]), "pathname must be a string or string[]"
@@ -22,7 +22,10 @@ def glob(pathname, *, recursive=False, key=None, reverse=False, unique=True):
         from collections import OrderedDict
         values = OrderedDict.fromkeys(values).keys()
 
-    return sorted(values, key=key, reverse=reverse)
+    if sort:
+        return sorted(values, key=sort_key, reverse=sort_reverse)
+
+    return values
 
 
 def fill(*args, **kwds):
