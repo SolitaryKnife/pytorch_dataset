@@ -306,10 +306,10 @@ def cache_tensor(cache_dir, make_dir=True):
     return cache_file(cache_dir, load_fn=load_pytorch_tensor, save_fn=save_pytorch_tensor, make_dir=make_dir)
 
 
-def cache_text(cache_dir, array=False, make_dir=True):
+def cache_text(cache_dir, as_array=False, make_dir=True):
     from os import linesep
 
-    if array:
+    if as_array:
         def load_text(path):
             with open(path, "r") as f:
                 lines = f.readlines()
@@ -367,9 +367,9 @@ def dcache_tensor(dataset, cache_dir, make_dir=True, enable=True):
     return dcache(dataset, cache_gen, enable)
 
 
-def dcache_text(dataset, cache_dir, array=False, make_dir=True, enable=True):
+def dcache_text(dataset, cache_dir, as_array=False, make_dir=True, enable=True):
     from functools import partial
-    cache_gen = partial(cache_text, cache_dir=cache_dir, array=array, make_dir=make_dir)
+    cache_gen = partial(cache_text, cache_dir=cache_dir, array=as_array, make_dir=make_dir)
     return dcache(dataset, cache_gen, enable)
 
 
