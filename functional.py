@@ -151,12 +151,9 @@ def indexfiles(pathquery, transform=None):
     ])
 
 
-def files(paths, transform=None, *, use_glob=True, glob_recursive=False, sort_key=None, sort_reverse=False):
+def globfiles(paths, transform=None, *, glob_recursive=False, sort_key=None, sort_reverse=False):
     from .utils import glob
-    if use_glob:
-        return dmap(glob(paths, recursive=glob_recursive, key=sort_key, reverse=sort_reverse, unique=True), transform)
-    else:
-        return dmap(paths, transform)
+    return dmap(glob(paths, recursive=glob_recursive, key=sort_key, reverse=sort_reverse, unique=True), transform)
 
 
 def images(paths, transform=None, img_exts=["jpg", "jpeg", "png"], *, img_loader=None, img_autoclose=True, use_glob=True, glob_recursive=False, sort_key=None, sort_reverse=False):
@@ -200,7 +197,7 @@ def images(paths, transform=None, img_exts=["jpg", "jpeg", "png"], *, img_loader
             img.close()
         return out
 
-    return files(paths, img_transform, use_glob=use_glob, glob_recursive=glob_recursive, sort_key=sort_key, sort_reverse=sort_reverse)
+    return globfiles(paths, img_transform, use_glob=use_glob, glob_recursive=glob_recursive, sort_key=sort_key, sort_reverse=sort_reverse)
 
 
 def tensors(paths, transform=None, *, tensor_loader=None, use_glob=True, glob_recursive=False, sort_key=None, sort_reverse=False):
@@ -224,7 +221,7 @@ def tensors(paths, transform=None, *, tensor_loader=None, use_glob=True, glob_re
         return transform(tensor)
 
     from .utils import glob
-    return files(paths, tensor_transform, use_glob=use_glob, glob_recursive=glob_recursive, sort_key=sort_key, sort_reverse=sort_reverse)
+    return globfiles(paths, tensor_transform, use_glob=use_glob, glob_recursive=glob_recursive, sort_key=sort_key, sort_reverse=sort_reverse)
 
 
 #####################################################
