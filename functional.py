@@ -152,8 +152,8 @@ def index_files(pathquery, transform=None):
         return pathquery.format(idx, idx=idx, index=idx)
 
     dirpath = dirname(generate_path(0))
-    count = len(next(walk(dirpath))[2])
-    return dmap(range(count), [
+    filecount = len(next(walk(dirpath))[2])
+    return numbers(filecount, [
         generate_path,
         transform or identity_transform
     ])
