@@ -14,7 +14,7 @@ class DictCache(Cache):
 
     def __init__(self, data=None):
         self.data = {}
-        self.data.update(data)
+        self.data.update(data or {})
 
     def __getitem__(self, idx):
         return self.data[idx]
