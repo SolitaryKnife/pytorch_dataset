@@ -99,7 +99,7 @@ class CombineDataset(Dataset):
 
     __slots__ = ["datasets", "comb_transform"]
 
-    def __init__(self, datasets, comb_transform):
+    def __init__(self, datasets, comb_transform, indexer=None):
         assert len(datasets) > 0
 
         assert all([callable(getattr(ds, "__len__", None)) for ds in datasets])
@@ -109,6 +109,9 @@ class CombineDataset(Dataset):
 
         self.datasets = datasets
         self.comb_transform = comb_transform
+
+        if callable(indexer):
+            self.indexer = indexer
 
     @staticmethod
     def indexer(i, sizes):
@@ -146,7 +149,7 @@ class CombineIterableDataset(IterableDataset):
 
     __slots__ = ["datasets", "comb_transform"]
 
-    def __init__(self, datasets, comb_transform):
+    def __init__(self, datasets, comb_transform, indexer=None):
         assert len(datasets) > 0
 
         from collections import Iterable
@@ -156,6 +159,9 @@ class CombineIterableDataset(IterableDataset):
 
         self.datasets = datasets
         self.comb_transform = comb_transform
+
+        if callable(indexer):
+            self.indexer = indexer
 
     @staticmethod
     def generator(datasets, comb_transform):

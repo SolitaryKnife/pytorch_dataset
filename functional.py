@@ -72,7 +72,7 @@ def dzip(*datasets, zip_transform=None):
     return ZipDataset(datasets, zip_transform)
 
 
-def dcombine(*datasets, comb_transform=None):
+def dcombine(*datasets, comb_transform=None, custom_indexer=None):
     if len(datasets) <= 0:
         from functools import partial
         return partial(dcombine, comb_transform=comb_transform)
@@ -87,11 +87,11 @@ def dcombine(*datasets, comb_transform=None):
     if any([isinstance(ds, IterableDataset) for ds in datasets]):
 
         from .dataset import CombineIterableDataset
-        return CombineIterableDataset(datasets, comb_transform)
+        return CombineIterableDataset(datasets, comb_transform, indexer=custom_indexer)
 
     # Otherwise, use CombineDataset
     from .dataset import CombineDataset
-    return CombineDataset(datasets, comb_transform)
+    return CombineDataset(datasets, comb_transform, indexer=custom_indexer)
 
 
 def daugment(dataset, aug_fn=None):
