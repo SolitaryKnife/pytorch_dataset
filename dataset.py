@@ -57,8 +57,12 @@ class ZipDataset(Dataset):
         self.datasets = datasets
         self.zip_transform = zip_transform
 
+    @property
+    def sizes(self):
+        return tuple([len(ds) for ds in self.datasets])
+
     def __len__(self):
-        return min([len(ds) for ds in self.datasets])
+        return min(self.sizes)
 
     def __getitem__(self, idx):
         array = []
