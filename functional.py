@@ -89,7 +89,7 @@ def dcombine(*datasets, comb_transform=None):
         from .dataset import CombineIterableDataset
         return CombineIterableDataset(datasets, comb_transform)
 
-    # Otherwise, use ZipDataset
+    # Otherwise, use CombineDataset
     from .dataset import CombineDataset
     return CombineDataset(datasets, comb_transform)
 
