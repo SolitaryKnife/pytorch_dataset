@@ -54,14 +54,11 @@ class ZipDataset(Dataset):
 
         assert callable(zip_transform)
 
-        ds0, *dsn = datasets
-        assert all([len(ds0) == len(ds) for ds in dsn]), "Sizes of all dataset must be the same"
-
         self.datasets = datasets
         self.zip_transform = zip_transform
 
     def __len__(self):
-        return len(self.datasets[0])
+        return min([len(ds) for ds in self.datasets])
 
     def __getitem__(self, idx):
         array = []
