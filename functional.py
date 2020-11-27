@@ -116,14 +116,13 @@ def dcache(dataset=None, cache=None, enable=True):
         return partial(dcache, cache=cache, enable=enable)
 
     if enable:
-        if callable(cache):
-            not_cache = any([
-                getattr(cache, "__getitem__", None) is None,
-                getattr(cache, "__setitem__", None) is None,
-                getattr(cache, "__contains__", None) is None
-            ])
-            if not_cache:
-                cache = cache()
+        not_cache = any([
+            getattr(cache, "__getitem__", None) is None,
+            getattr(cache, "__setitem__", None) is None,
+            getattr(cache, "__contains__", None) is None
+        ])
+        if callable(cache) and not_cache:
+            cache = cache()
 
         from .dataset import CachedDataset
         return CachedDataset(dataset, cache)
