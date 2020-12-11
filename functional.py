@@ -215,12 +215,12 @@ def images(paths, transform=None, *, img_loader="pil", img_autoclose=True):
     return dmap(paths, img_transform)
 
 
-def glob_images(paths, transform=None, img_loader=None, img_autoclose=True, glob_recursive=False, glob_unique=True, glob_sort=True, sort_key=None, sort_reverse=False):
+def glob_images(paths, transform=None, img_loader="pil", img_autoclose=True, glob_recursive=False, glob_unique=True, glob_sort=True, sort_key=None, sort_reverse=False):
     paths = glob_files(paths, recursive=glob_recursive, unique=glob_unique, sort=glob_sort, sort_key=sort_key, sort_reverse=sort_reverse)
     return images(paths, transform, img_loader=img_loader, img_autoclose=img_autoclose)
 
 
-def index_images(pathquery, transform, img_loader=None, img_autoclose=True, maxsize=None):
+def index_images(pathquery, transform, img_loader="pil", img_autoclose=True, maxsize=None):
     paths = index_files(pathquery, maxsize=maxsize)
     return images(paths, transform, img_loader=img_loader, img_autoclose=img_autoclose)
 
