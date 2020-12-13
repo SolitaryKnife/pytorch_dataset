@@ -8,7 +8,7 @@ class ValueDataset(Dataset):
     def __init__(self, values, transform=None):
         assert callable(getattr(values, "__len__", None))
         assert callable(getattr(values, "__getitem__", None))
-        assert callable(transform) or None
+        assert callable(transform) or transform is None
 
         self.values = values
         self.transform = transform
@@ -30,7 +30,7 @@ class ValueIterableDataset(IterableDataset):
     def __init__(self, values, transform=None):
         from collections import Iterable
         assert isinstance(values, Iterable)
-        assert callable(transform) or None
+        assert callable(transform) or transform is None
 
         self.values = values
         self.transform = transform
@@ -57,7 +57,7 @@ class ZipDataset(Dataset):
         assert all([callable(getattr(ds, "__len__", None)) for ds in datasets])
         assert all([callable(getattr(ds, "__getitem__", None)) for ds in datasets])
 
-        assert callable(zip_transform) or None
+        assert callable(zip_transform) or zip_transform is None
 
         self.datasets = datasets
         self.zip_transform = zip_transform
@@ -88,7 +88,7 @@ class ZipIterableDataset(IterableDataset):
         from collections import Iterable
         assert all([isinstance(ds, Iterable) for ds in datasets])
 
-        assert callable(zip_transform)
+        assert callable(zip_transform) or zip_transform is None
 
         self.datasets = datasets
         self.zip_transform = zip_transform
@@ -115,7 +115,7 @@ class CombineDataset(Dataset):
         assert all([callable(getattr(ds, "__len__", None)) for ds in datasets])
         assert all([callable(getattr(ds, "__getitem__", None)) for ds in datasets])
 
-        assert callable(comb_transform) or None
+        assert callable(comb_transform) or comb_transform is None
 
         self.datasets = datasets
         self.comb_transform = comb_transform
@@ -168,7 +168,7 @@ class CombineIterableDataset(IterableDataset):
         from collections import Iterable
         assert all([isinstance(ds, Iterable) for ds in datasets])
 
-        assert callable(comb_transform) or None
+        assert callable(comb_transform) or comb_transform is None
 
         self.datasets = datasets
         self.comb_transform = comb_transform
@@ -196,7 +196,7 @@ class AugmentedDataset(IterableDataset):
     def __init__(self, values, augment):
         from collections import Iterable
         assert isinstance(values, Iterable)
-        assert callable(augment)
+        assert callable(augment) or augment is None
 
         self.values = values
         self.augment = augment
